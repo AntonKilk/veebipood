@@ -27,4 +27,5 @@ public class Person {
     private String personalCode;
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
+    private PersonRole role;
 }

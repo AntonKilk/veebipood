@@ -6,7 +6,7 @@ public record ProductDto(
         Boolean active,
         Integer stock,
         String description,
-        String image
-
+        String image,
+        Long categoryId
 ) {
 }

@@ -2,6 +2,7 @@ package ee.anton.veebipood.controller;
 
 import ee.anton.veebipood.dto.CategoryDto;
 import ee.anton.veebipood.entity.Category;
+import ee.anton.veebipood.mapper.CategoryMapper;
 import ee.anton.veebipood.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,6 +20,7 @@ import java.util.List;
 public class CategoryController {
 
     private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
 
     @GetMapping("categories")
     public List<Category> findAll() {
@@ -26,14 +28,15 @@ public class CategoryController {
     }
 
     @PostMapping("categories")
-    public Category save(@RequestBody Category category) {
+    public Category save(@RequestBody CategoryDto categoryDto) {
+        Category category = categoryMapper.toEntity(categoryDto);
         return categoryRepository.save(category);
     }
 
     @PutMapping("categories/{id}")
     public Category update(@PathVariable Long id, @RequestBody CategoryDto categoryDto) {
         Category category = categoryRepository.findById(id).orElseThrow();
-        category.setName(categoryDto.name());
+        categoryMapper.update(categoryDto, category);
         return categoryRepository.save(category);
     }
 
