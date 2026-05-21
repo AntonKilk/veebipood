@@ -7,6 +7,8 @@ import ee.anton.veebipood.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,5 +56,11 @@ public class ProductController {
     @DeleteMapping("products/{id}")
     public void delete(@PathVariable Long id) {
         productRepository.deleteById(id);
+    }
+
+    @MessageMapping("/products-update")
+    @SendTo("/get-products")
+    public Page<Product> getUpdatedProducts(Pageable pageable) {
+        return productRepository.findAll(pageable);
     }
 }
