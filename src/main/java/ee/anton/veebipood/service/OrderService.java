@@ -3,6 +3,7 @@ package ee.anton.veebipood.service;
 import ee.anton.veebipood.entity.Order;
 import ee.anton.veebipood.entity.OrderRow;
 import ee.anton.veebipood.entity.Person;
+import ee.anton.veebipood.entity.Product;
 import ee.anton.veebipood.repository.OrderRepository;
 import ee.anton.veebipood.repository.PersonRepository;
 import ee.anton.veebipood.repository.ProductRepository;
@@ -31,14 +32,28 @@ public class OrderService {
                 .stream()
                 .map(or -> {
                     OrderRow orderRow = new OrderRow();
-                    orderRow.setProduct((productRepository.findById(or.getProduct()
-                            .getId())).orElseThrow());
+                    Product product = productRepository.findById(or.getProduct().getId()).orElseThrow();
+                    orderRow.setProduct(product);
                     orderRow.setQuantity(or.getQuantity());
+                    decreaseStock(product, or.getQuantity());
                     return orderRow;
                 })
                 .mapToDouble(or -> or.getQuantity() * or.getProduct().getPrice())
                 .sum();
         order.setTotal(total);
         return orderRepository.save(order);
+    }
+
+    public Product decreaseStock(Product product, Integer change) {
+        if (product.getStock() < change) {
+            throw new RuntimeException("Not enough inventory");
+        }
+        product.setStock(product.getStock() - change);
+        return productRepository.save(product);
+    }
+
+    public Product increaseStock(Product product, Integer change) {
+        product.setStock(product.getStock() + change);
+        return productRepository.save(product);
     }
 }
