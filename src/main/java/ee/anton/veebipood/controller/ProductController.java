@@ -1,5 +1,6 @@
 package ee.anton.veebipood.controller;
 
+import ee.anton.veebipood.dto.PageRequestDto;
 import ee.anton.veebipood.dto.ProductDto;
 import ee.anton.veebipood.entity.Product;
 import ee.anton.veebipood.repository.ProductRepository;
@@ -67,7 +68,8 @@ public class ProductController {
 
     @MessageMapping("/products-update")
     @SendTo("/get-products")
-    public Page<Product> getUpdatedProducts() {
-        return productRepository.findAll(PageRequest.of(0, 12, Sort.by("stock").ascending()));
+    public Page<Product> getUpdatedProducts(@RequestBody PageRequestDto request) {
+        return productRepository.findAll(
+                PageRequest.of(request.page(), request.size(), Sort.by("stock").ascending()));
     }
 }

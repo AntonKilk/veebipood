@@ -1,10 +1,13 @@
 package ee.anton.veebipood.controller;
 
+import ee.anton.veebipood.dto.OrderDto;
 import ee.anton.veebipood.entity.Order;
 import ee.anton.veebipood.entity.OrderRow;
 import ee.anton.veebipood.repository.OrderRepository;
 import ee.anton.veebipood.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,9 +29,11 @@ public class OrderController {
         return orderRepository.findAll();
     }
 
+    @Cacheable(value = "orderCache", key = "#id")
     @GetMapping("orders/{id}")
-    public Order findById(@PathVariable Long id) {
-        return orderRepository.findById(id).orElseThrow();
+    public OrderDto findById(@PathVariable Long id) {
+        Order order = orderRepository.findById(id).orElseThrow();
+        return orderService.mapToOrder(order);
     }
 
     @PostMapping("orders")
@@ -36,10 +41,12 @@ public class OrderController {
         return orderService.saveOrder(orderRows);
     }
 
+    @CacheEvict(value = "orderCache", key = "#id")
     @PatchMapping("orders/{id}")
-    public Order archive(@PathVariable Long id) {
+    public OrderDto archive(@PathVariable Long id) {
         Order order = orderRepository.findById(id).orElseThrow(() -> new RuntimeException("Order not found"));
         order.setActive(false);
-        return orderRepository.save(order);
+        Order modifiedOrder = orderRepository.save(order);
+        return orderService.mapToOrder(modifiedOrder);
     }
 }

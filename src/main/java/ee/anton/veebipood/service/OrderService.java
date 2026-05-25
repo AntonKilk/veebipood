@@ -1,11 +1,12 @@
 package ee.anton.veebipood.service;
 
+import ee.anton.veebipood.dto.OrderDto;
 import ee.anton.veebipood.entity.Order;
 import ee.anton.veebipood.entity.OrderRow;
 import ee.anton.veebipood.entity.Person;
 import ee.anton.veebipood.entity.Product;
+import ee.anton.veebipood.mapper.OrderMapper;
 import ee.anton.veebipood.repository.OrderRepository;
-import ee.anton.veebipood.repository.PersonRepository;
 import ee.anton.veebipood.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,8 +18,8 @@ import java.util.List;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final PersonRepository personRepository;
     private final ProductRepository productRepository;
+    private final OrderMapper orderMapper;
 
     public Order saveOrder(List<OrderRow> orderRows) {
         Order order = new Order();
@@ -55,5 +56,9 @@ public class OrderService {
     public Product increaseStock(Product product, Integer change) {
         product.setStock(product.getStock() + change);
         return productRepository.save(product);
+    }
+
+    public OrderDto mapToOrder(Order order) {
+        return orderMapper.toDto(order);
     }
 }

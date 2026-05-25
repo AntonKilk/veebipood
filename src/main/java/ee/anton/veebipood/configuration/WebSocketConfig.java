@@ -1,4 +1,4 @@
-package ee.anton.veebipood;
+package ee.anton.veebipood.configuration;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
