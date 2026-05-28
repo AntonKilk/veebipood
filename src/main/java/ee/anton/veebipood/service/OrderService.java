@@ -33,7 +33,10 @@ public class OrderService {
                 .stream()
                 .map(or -> {
                     OrderRow orderRow = new OrderRow();
-                    Product product = productRepository.findById(or.getProduct().getId()).orElseThrow();
+                    Long productId = or.getProduct().getId();
+                    Product product = productRepository.findById(productId).orElseThrow(
+                            () -> new RuntimeException("No product with id " + productId)
+                    );
                     orderRow.setProduct(product);
                     orderRow.setQuantity(or.getQuantity());
                     decreaseStock(product, or.getQuantity());

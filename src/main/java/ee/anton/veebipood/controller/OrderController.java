@@ -32,7 +32,9 @@ public class OrderController {
     @Cacheable(value = "orderCache", key = "#id")
     @GetMapping("orders/{id}")
     public OrderDto findById(@PathVariable Long id) {
-        Order order = orderRepository.findById(id).orElseThrow();
+        Order order = orderRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("No order with id " + id)
+        );
         return orderService.mapToOrder(order);
     }
 
