@@ -7,6 +7,7 @@ import ee.anton.veebipood.repository.ProductRepository;
 import ee.anton.veebipood.service.CacheService;
 import ee.anton.veebipood.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.concurrent.ExecutionException;
 
+@Log4j2
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:4200")
@@ -36,6 +38,7 @@ public class ProductController {
 
     @GetMapping("products")
     public Page<Product> findAll(Pageable pageable, @RequestParam(required = false) Long categoryId) {
+        log.info("Fetching products {}", pageable);
         if (categoryId != null) {
             return productRepository.findAllByCategoryId(pageable, categoryId);
         }
