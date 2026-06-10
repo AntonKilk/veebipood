@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
 @RequiredArgsConstructor
@@ -25,6 +24,10 @@ public class SecurityConfig {
                     request.requestMatchers(HttpMethod.GET, "/categories").permitAll();
                     request.requestMatchers(HttpMethod.POST, "/login", "/signup").permitAll();
                     request.requestMatchers(HttpMethod.POST, "/signup").permitAll();
+                    request.requestMatchers(HttpMethod.POST, "/smart-id").permitAll();
+                    request.requestMatchers(HttpMethod.GET, "/smart-id-session/*").permitAll();
+                    request.requestMatchers(HttpMethod.GET, "/smart-id-link/*").permitAll();
+                    request.requestMatchers(HttpMethod.GET, "/smart-id-callback").permitAll();
                     request.anyRequest().authenticated();
                 })
                 .csrf(AbstractHttpConfigurer::disable)

@@ -1,9 +1,12 @@
 package ee.anton.veebipood.controller;
 
 import ee.anton.veebipood.dto.LoginDto;
+import ee.anton.veebipood.dto.SmartIdRecord;
 import ee.anton.veebipood.entity.Person;
 import ee.anton.veebipood.repository.PersonRepository;
 import ee.anton.veebipood.service.JwtService;
+import ee.anton.veebipood.service.SmartIdService;
+import ee.sk.smartid.rest.dao.DeviceLinkSessionResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +23,7 @@ public class AuthController {
 
     private final PersonRepository personRepository;
     private final JwtService jwtService;
+    private final SmartIdService smartIdService;
 
     @GetMapping("persons")
     public List<Person> getAllPersons() {
@@ -38,5 +42,10 @@ public class AuthController {
         }
         Person dbPerson = personRepository.findByEmail(person.email());
         return jwtService.generateToken(dbPerson);
+    }
+
+    @PostMapping("smart-id")
+    public String loginWithSmartId(@RequestBody SmartIdRecord smartIdRecord) {
+        return smartIdService.smartIdLogin(smartIdRecord);
     }
 }
